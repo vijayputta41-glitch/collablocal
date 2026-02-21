@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
+import { createCampaignSchema, validateBody } from "@/lib/validations";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -63,6 +64,17 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
+    // Validate input
+    const validation = validateBody(createCampaignSchema, body);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
+        { status: 400 }
+      );
+    }
+
+    const { data } = validation;
+
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: { brandProfile: true },
@@ -77,14 +89,14 @@ export async function POST(req: NextRequest) {
 
     const campaign = await prisma.campaign.create({
       data: {
-        title: body.title,
-        description: body.description,
-        city: body.city,
-        niches: body.niches,
-        contentType: body.contentType,
-        budgetPerCreator: body.budgetPerCreator,
-        maxCreators: body.maxCreators,
-        deadline: new Date(body.deadline),
+        title: data.title,
+        description: data.description,
+        city: data.city,
+        niches: data.niches,
+        contentType: data.contentType,
+        budgetPerCreator: data.budgetPerCreator,
+        maxCreators: data.maxCreators,
+        deadline: new Date(data.deadline),
         status: "active",
         brandId: user.brandProfile.id,
       },

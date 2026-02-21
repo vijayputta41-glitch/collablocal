@@ -3,6 +3,64 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
+// Shared include pattern for deal queries — eliminates duplication
+const DEAL_INCLUDE = {
+  campaign: true,
+  brand: {
+    select: {
+      id: true,
+      businessName: true,
+      description: true,
+      totalCampaigns: true,
+      totalSpent: true,
+      avgRating: true,
+    },
+  },
+  creator: {
+    select: {
+      id: true,
+      displayName: true,
+      bio: true,
+      followerCount: true,
+      totalDeals: true,
+      totalEarnings: true,
+      avgRating: true,
+    },
+  },
+  reviews: {
+    include: {
+      reviewer: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  },
+} as const;
+
+// Valid status transitions: { currentStatus: [allowedNextStatuses] }
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  pending: ["escrow_held"],
+  escrow_held: ["content_submitted"],
+  content_submitted: ["revision_requested", "approved"],
+  revision_requested: ["content_submitted"],
+  approved: ["released"],
+};
+
+// Which role can trigger which transition
+const BRAND_TRANSITIONS = ["escrow_held", "revision_requested", "approved", "released"];
+const CREATOR_TRANSITIONS = ["content_submitted"];
+
+async function resolveProfileIds(userId: string) {
+  const [creatorProfile, brandProfile] = await Promise.all([
+    prisma.creatorProfile.findUnique({ where: { userId }, select: { id: true } }),
+    prisma.brandProfile.findUnique({ where: { userId }, select: { id: true } }),
+  ]);
+  return { creatorProfile, brandProfile };
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -20,41 +78,7 @@ export async function GET(
 
     const deal = await prisma.deal.findUnique({
       where: { id },
-      include: {
-        campaign: true,
-        brand: {
-          select: {
-            id: true,
-            businessName: true,
-            description: true,
-            totalCampaigns: true,
-            totalSpent: true,
-            avgRating: true,
-          },
-        },
-        creator: {
-          select: {
-            id: true,
-            displayName: true,
-            bio: true,
-            followerCount: true,
-            totalDeals: true,
-            totalEarnings: true,
-            avgRating: true,
-          },
-        },
-        reviews: {
-          include: {
-            reviewer: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
+      include: DEAL_INCLUDE,
     });
 
     if (!deal) {
@@ -64,9 +88,12 @@ export async function GET(
       );
     }
 
-    // Check authorization
+    // Check authorization using profile IDs (resolve User ID → Profile ID)
+    const { creatorProfile, brandProfile } = await resolveProfileIds(session.user.id);
+
     const isAuthorized =
-      deal.creatorId === session.user.id || deal.brandId === session.user.id;
+      (creatorProfile && deal.creatorId === creatorProfile.id) ||
+      (brandProfile && deal.brandId === brandProfile.id);
 
     if (!isAuthorized) {
       return NextResponse.json(
@@ -103,13 +130,16 @@ export async function PATCH(
     const body = await req.json();
     const { status, contentUrl } = body;
 
+    if (!status || typeof status !== "string") {
+      return NextResponse.json(
+        { error: "Status is required" },
+        { status: 400 }
+      );
+    }
+
     const deal = await prisma.deal.findUnique({
       where: { id },
-      include: {
-        campaign: true,
-        brand: true,
-        creator: true,
-      },
+      include: { campaign: true, brand: true, creator: true },
     });
 
     if (!deal) {
@@ -119,9 +149,10 @@ export async function PATCH(
       );
     }
 
-    // Check authorization
-    const isBrand = deal.brandId === session.user.id;
-    const isCreator = deal.creatorId === session.user.id;
+    // Resolve profile IDs for authorization
+    const { creatorProfile, brandProfile } = await resolveProfileIds(session.user.id);
+    const isBrand = brandProfile !== null && deal.brandId === brandProfile.id;
+    const isCreator = creatorProfile !== null && deal.creatorId === creatorProfile.id;
 
     if (!isBrand && !isCreator) {
       return NextResponse.json(
@@ -130,264 +161,93 @@ export async function PATCH(
       );
     }
 
-    // Validate status transitions
-    let updatedDeal;
-
-    if (isCreator && status === "content_submitted") {
-      if (!contentUrl) {
-        return NextResponse.json(
-          { error: "contentUrl is required" },
-          { status: 400 }
-        );
-      }
-      updatedDeal = await prisma.deal.update({
-        where: { id: id },
-        data: {
-          escrowStatus: "content_submitted",
-          contentUrl,
-          revisionRequested: false,
+    // Validate status transition
+    const allowedTransitions = VALID_TRANSITIONS[deal.escrowStatus] || [];
+    if (!allowedTransitions.includes(status)) {
+      return NextResponse.json(
+        {
+          error: `Invalid status transition from "${deal.escrowStatus}" to "${status}". Allowed: ${allowedTransitions.join(", ") || "none"}`,
         },
-        include: {
-          campaign: true,
-          brand: {
-            select: {
-              id: true,
-              businessName: true,
-              description: true,
-              totalCampaigns: true,
-              totalSpent: true,
-              avgRating: true,
-            },
-          },
-          creator: {
-            select: {
-              id: true,
-              displayName: true,
-              bio: true,
-              followerCount: true,
-              totalDeals: true,
-              totalEarnings: true,
-              avgRating: true,
-            },
-          },
-          reviews: {
-            include: {
-              reviewer: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
-            },
-          },
-        },
-      });
-    } else if (isBrand) {
-      if (status === "escrow_held") {
-        updatedDeal = await prisma.deal.update({
-          where: { id: id },
-          data: {
-            escrowStatus: "escrow_held",
-          },
-          include: {
-            campaign: true,
-            brand: {
-              select: {
-                id: true,
-                businessName: true,
-                description: true,
-                totalCampaigns: true,
-                totalSpent: true,
-                avgRating: true,
-              },
-            },
-            creator: {
-              select: {
-                id: true,
-                displayName: true,
-                bio: true,
-                followerCount: true,
-                totalDeals: true,
-                totalEarnings: true,
-                avgRating: true,
-              },
-            },
-            reviews: {
-              include: {
-                reviewer: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-      } else if (status === "revision_requested") {
-        updatedDeal = await prisma.deal.update({
-          where: { id: id },
-          data: {
-            escrowStatus: "revision_requested",
-            revisionRequested: true,
-          },
-          include: {
-            campaign: true,
-            brand: {
-              select: {
-                id: true,
-                businessName: true,
-                description: true,
-                totalCampaigns: true,
-                totalSpent: true,
-                avgRating: true,
-              },
-            },
-            creator: {
-              select: {
-                id: true,
-                displayName: true,
-                bio: true,
-                followerCount: true,
-                totalDeals: true,
-                totalEarnings: true,
-                avgRating: true,
-              },
-            },
-            reviews: {
-              include: {
-                reviewer: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-      } else if (status === "approved") {
-        updatedDeal = await prisma.deal.update({
-          where: { id: id },
-          data: {
-            escrowStatus: "approved",
-            brandApproved: true,
-          },
-          include: {
-            campaign: true,
-            brand: {
-              select: {
-                id: true,
-                businessName: true,
-                description: true,
-                totalCampaigns: true,
-                totalSpent: true,
-                avgRating: true,
-              },
-            },
-            creator: {
-              select: {
-                id: true,
-                displayName: true,
-                bio: true,
-                followerCount: true,
-                totalDeals: true,
-                totalEarnings: true,
-                avgRating: true,
-              },
-            },
-            reviews: {
-              include: {
-                reviewer: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-      } else if (status === "released") {
-        const now = new Date();
+        { status: 400 }
+      );
+    }
 
-        // Update deal
-        updatedDeal = await prisma.deal.update({
-          where: { id: id },
-          data: {
-            escrowStatus: "released",
-            completedAt: now,
-          },
-          include: {
-            campaign: true,
-            brand: {
-              select: {
-                id: true,
-                businessName: true,
-                description: true,
-                totalCampaigns: true,
-                totalSpent: true,
-                avgRating: true,
-              },
-            },
-            creator: {
-              select: {
-                id: true,
-                displayName: true,
-                bio: true,
-                followerCount: true,
-                totalDeals: true,
-                totalEarnings: true,
-                avgRating: true,
-              },
-            },
-            reviews: {
-              include: {
-                reviewer: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-        });
+    // Validate role permission for this transition
+    if (isBrand && !BRAND_TRANSITIONS.includes(status)) {
+      return NextResponse.json(
+        { error: "Brands cannot perform this status transition" },
+        { status: 403 }
+      );
+    }
 
-        // Update creator stats
-        await prisma.creatorProfile.update({
+    if (isCreator && !CREATOR_TRANSITIONS.includes(status)) {
+      return NextResponse.json(
+        { error: "Creators cannot perform this status transition" },
+        { status: 403 }
+      );
+    }
+
+    // Build the update data based on status
+    const updateData: Record<string, unknown> = { escrowStatus: status };
+
+    switch (status) {
+      case "content_submitted":
+        if (!contentUrl) {
+          return NextResponse.json(
+            { error: "contentUrl is required for content submission" },
+            { status: 400 }
+          );
+        }
+        updateData.contentUrl = contentUrl;
+        updateData.revisionRequested = false;
+        break;
+
+      case "revision_requested":
+        updateData.revisionRequested = true;
+        break;
+
+      case "approved":
+        updateData.brandApproved = true;
+        break;
+
+      case "released":
+        updateData.completedAt = new Date();
+        break;
+    }
+
+    // For "released" status, use a transaction to atomically update deal + stats
+    if (status === "released") {
+      const [updatedDeal] = await prisma.$transaction([
+        prisma.deal.update({
+          where: { id },
+          data: updateData,
+          include: DEAL_INCLUDE,
+        }),
+        prisma.creatorProfile.update({
           where: { id: deal.creatorId },
           data: {
             totalDeals: { increment: 1 },
             totalEarnings: { increment: deal.amount },
           },
-        });
-
-        // Update brand stats
-        await prisma.brandProfile.update({
+        }),
+        prisma.brandProfile.update({
           where: { id: deal.brandId },
           data: {
             totalCampaigns: { increment: 1 },
             totalSpent: { increment: deal.amount + deal.platformFee },
           },
-        });
-      } else {
-        return NextResponse.json(
-          { error: "Invalid status transition" },
-          { status: 400 }
-        );
-      }
-    } else {
-      return NextResponse.json(
-        { error: "Invalid status transition" },
-        { status: 400 }
-      );
+        }),
+      ]);
+
+      return NextResponse.json({ deal: updatedDeal });
     }
+
+    // Standard update for all other statuses
+    const updatedDeal = await prisma.deal.update({
+      where: { id },
+      data: updateData,
+      include: DEAL_INCLUDE,
+    });
 
     return NextResponse.json({ deal: updatedDeal });
   } catch (error) {

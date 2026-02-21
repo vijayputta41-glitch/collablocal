@@ -110,3 +110,22 @@ export const APPLICATION_STATUS = {
   ACCEPTED: 'accepted',
   REJECTED: 'rejected',
 } as const;
+
+// ============================================
+// Business Constants
+// ============================================
+
+export const PLATFORM_FEE_PERCENTAGE = 12; // 12% platform fee on deals
+
+export const CREATOR_LEVELS = {
+  BRONZE: { name: 'bronze', minDeals: 0, minEarnings: 0 },
+  SILVER: { name: 'silver', minDeals: 5, minEarnings: 25000 },
+  GOLD: { name: 'gold', minDeals: 15, minEarnings: 100000 },
+  PLATINUM: { name: 'platinum', minDeals: 30, minEarnings: 500000 },
+} as const;
+
+export const PAGINATION = {
+  DEFAULT_PAGE: 1,
+  DEFAULT_LIMIT: 20,
+  MAX_LIMIT: 50,
+} as const;

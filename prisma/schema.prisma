@@ -199,14 +199,17 @@ model Deal {
   brandApproved     Boolean   @default(false)
   completedAt       DateTime?
   createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   campaign Campaign       @relation(fields: [campaignId], references: [id])
   brand    BrandProfile   @relation("BrandDeals", fields: [brandId], references: [id])
   creator  CreatorProfile @relation("CreatorDeals", fields: [creatorId], references: [id])
   reviews  Review[]
 
+  @@unique([campaignId, creatorId]) // Prevent duplicate deals
   @@index([brandId])
   @@index([creatorId])
+  @@index([campaignId])
   @@index([escrowStatus])
 }
 
@@ -228,4 +231,24 @@ model Review {
   reviewee User @relation("RevieweeReviews", fields: [revieweeId], references: [id])
 
   @@unique([dealId, reviewerId])
+}
+
+// ============================================
+// Notification
+// ============================================
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // application_received, application_accepted, application_rejected, deal_updated, review_received, campaign_expired
+  title     String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  linkUrl   String?  // Optional link to navigate to
+  metadata  String?  @db.Text // JSON string for extra data
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, read])
+  @@index([createdAt(sort: Desc)])
 }

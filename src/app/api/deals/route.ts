@@ -18,19 +18,48 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get("status");
     const role = searchParams.get("role"); // 'creator' or 'brand'
 
-    // Build query filters
+    // Resolve the correct profile ID (User ID != Profile ID)
+    let creatorProfileId: string | null = null;
+    let brandProfileId: string | null = null;
+
+    if (role === "creator" || !role) {
+      const creatorProfile = await prisma.creatorProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+      creatorProfileId = creatorProfile?.id ?? null;
+    }
+
+    if (role === "brand" || !role) {
+      const brandProfile = await prisma.brandProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+      brandProfileId = brandProfile?.id ?? null;
+    }
+
+    // Build query filters using profile IDs (not user IDs)
     const where: any = {};
 
     if (role === "creator") {
-      where.creatorId = session.user.id;
+      if (!creatorProfileId) {
+        return NextResponse.json({ deals: [] });
+      }
+      where.creatorId = creatorProfileId;
     } else if (role === "brand") {
-      where.brandId = session.user.id;
+      if (!brandProfileId) {
+        return NextResponse.json({ deals: [] });
+      }
+      where.brandId = brandProfileId;
     } else {
       // Return deals for both roles
-      where.OR = [
-        { creatorId: session.user.id },
-        { brandId: session.user.id },
-      ];
+      const conditions = [];
+      if (creatorProfileId) conditions.push({ creatorId: creatorProfileId });
+      if (brandProfileId) conditions.push({ brandId: brandProfileId });
+      if (conditions.length === 0) {
+        return NextResponse.json({ deals: [] });
+      }
+      where.OR = conditions;
     }
 
     if (status) {

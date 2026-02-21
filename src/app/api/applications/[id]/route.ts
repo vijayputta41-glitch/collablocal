@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/db';
+import { PLATFORM_FEE_PERCENTAGE } from '@/lib/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -141,21 +142,31 @@ export async function PATCH(
       },
     });
 
-    // If accepting: create a Deal
+    // If accepting: create a Deal atomically using a transaction
     if (status === 'accepted') {
-      const platformFeePercentage = 12; // 12% platform fee
       const amount = application.campaign.budgetPerCreator;
-      const platformFee = Math.round(amount * (platformFeePercentage / 100));
+      const platformFee = Math.round(amount * (PLATFORM_FEE_PERCENTAGE / 100));
 
-      const deal = await prisma.deal.create({
-        data: {
-          campaignId: application.campaignId,
-          brandId: application.campaign.brandId,
-          creatorId: application.creatorId,
-          amount,
-          platformFee,
-          escrowStatus: 'pending',
-        },
+      const deal = await prisma.$transaction(async (tx) => {
+        // Create the deal
+        const newDeal = await tx.deal.create({
+          data: {
+            campaignId: application.campaignId,
+            brandId: application.campaign.brandId,
+            creatorId: application.creatorId,
+            amount,
+            platformFee,
+            escrowStatus: 'pending',
+          },
+        });
+
+        // Increment campaign application count
+        await tx.campaign.update({
+          where: { id: application.campaignId },
+          data: { applicationsCount: { increment: 1 } },
+        });
+
+        return newDeal;
       });
 
       // Return both application and deal
