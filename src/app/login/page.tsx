@@ -40,7 +40,7 @@ function LoginContent() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel - brand messaging */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12 gradient-navy-blue animate-gradient-shift">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-14 gradient-navy-blue animate-gradient-shift">
         {/* Decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="blob-coral -top-20 -right-20 w-[300px] h-[300px] opacity-20" />
@@ -50,7 +50,7 @@ function LoginContent() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 relative z-10 group">
-          <div className="w-9 h-9 rounded-xl gradient-coral-blue flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+          <div className="w-10 h-10 rounded-xl gradient-coral-blue flex items-center justify-center shadow-md transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
             <span className="text-white font-bold text-sm">C</span>
           </div>
           <span className="font-extrabold text-xl text-white">CollabLocal</span>
@@ -58,17 +58,17 @@ function LoginContent() {
 
         {/* Tagline */}
         <div className="relative z-10">
-          <h1 className="heading-display text-4xl xl:text-5xl text-white mb-5 leading-tight">
+          <h1 className="heading-display text-4xl xl:text-5xl text-white mb-6 leading-tight">
             Where Local Brands
             <br />
             Meet Real Creators
           </h1>
-          <p className="text-gray-300 text-lg mb-12 max-w-md leading-relaxed">
+          <p className="text-gray-300 text-lg mb-14 max-w-md leading-relaxed">
             Hyper-local influencer marketing with escrow protection and verified profiles.
           </p>
 
           {/* Stats row */}
-          <div className="flex gap-10">
+          <div className="flex gap-12">
             {[
               { value: '3,500+', label: 'Creators' },
               { value: '450+', label: 'Brands' },
@@ -76,24 +76,24 @@ function LoginContent() {
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-2xl font-extrabold text-white">{stat.value}</p>
-                <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">{stat.label}</p>
+                <p className="text-xs text-gray-400 mt-1.5 uppercase tracking-wider font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Testimonial card */}
-        <div className="glass-dark rounded-2xl p-6 max-w-sm relative z-10">
+        <div className="glass-dark rounded-2xl p-7 max-w-sm relative z-10">
           <div className="flex gap-1 mb-3">
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
             ))}
           </div>
-          <p className="text-sm text-gray-300 mb-4 leading-relaxed">
+          <p className="text-sm text-gray-300 mb-5 leading-relaxed">
             &ldquo;CollabLocal helped me find 10 amazing local creators for our cafe launch. The escrow feature gave us complete peace of mind.&rdquo;
           </p>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full gradient-coral-blue flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-10 h-10 rounded-full gradient-coral-blue flex items-center justify-center text-white text-xs font-bold">
               R
             </div>
             <div>
@@ -106,14 +106,13 @@ function LoginContent() {
 
       {/* Right panel - login form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 relative" style={{ backgroundColor: 'var(--color-surface)' }}>
-        {/* Subtle mesh background on right panel */}
         <div className="absolute inset-0 gradient-mesh opacity-50" />
 
         <div className="w-full max-w-md relative z-10">
           {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-10">
+          <div className="lg:hidden text-center mb-12">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl gradient-coral-blue flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 rounded-xl gradient-coral-blue flex items-center justify-center shadow-md">
                 <span className="text-white font-bold">C</span>
               </div>
               <span className="font-extrabold text-xl" style={{ color: 'var(--color-navy-light)' }}>
@@ -124,13 +123,13 @@ function LoginContent() {
 
           <div className="mb-10">
             <h2 className="heading-display text-3xl sm:text-4xl text-gray-900 mb-3">Welcome back</h2>
-            <p className="text-gray-500 text-base">Sign in to your account or create a new one</p>
+            <p className="text-gray-400 text-base">Sign in to your account or create a new one</p>
           </div>
 
           <button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-semibold text-gray-700 border-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed mb-6 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-semibold text-gray-700 border-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mb-6 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
             style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24">
@@ -152,7 +151,7 @@ function LoginContent() {
           </div>
 
           <div className="text-center mb-10">
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-400 text-sm">
               New to CollabLocal?{' '}
               <Link href="/onboarding" className="font-semibold text-coral hover:underline transition-colors">
                 Get started
@@ -162,17 +161,17 @@ function LoginContent() {
 
           {/* Trust indicators */}
           <div className="flex items-center justify-center gap-6 pt-6 border-t" style={{ borderColor: 'var(--color-border-light)' }}>
-            <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-tertiary)' }}>
+            <div className="flex items-center gap-1.5 text-gray-400">
               <Shield size={14} />
               <span className="text-xs font-medium">Escrow Protected</span>
             </div>
-            <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-tertiary)' }}>
+            <div className="flex items-center gap-1.5 text-gray-400">
               <Users size={14} />
               <span className="text-xs font-medium">3,500+ Creators</span>
             </div>
           </div>
 
-          <p className="text-xs text-center mt-6" style={{ color: 'var(--color-text-tertiary)' }}>
+          <p className="text-xs text-center mt-8 text-gray-400">
             By signing in, you agree to our{' '}
             <a href="#" className="underline hover:text-gray-600 transition-colors">Terms</a>
             {' '}and{' '}

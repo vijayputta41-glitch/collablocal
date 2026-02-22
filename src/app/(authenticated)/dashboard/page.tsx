@@ -41,14 +41,14 @@ interface DashboardData {
 }
 
 const ACTIVITY_ICONS: Record<string, { icon: typeof Clock; color: string; bg: string }> = {
-  pending: { icon: Clock, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
-  escrow_held: { icon: DollarSign, color: '#0F3460', bg: 'rgba(15, 52, 96, 0.1)' },
-  content_submitted: { icon: FileText, color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.1)' },
-  revision_requested: { icon: AlertCircle, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
-  approved: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
-  released: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
-  accepted: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
-  rejected: { icon: XCircle, color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  pending: { icon: Clock, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.08)' },
+  escrow_held: { icon: DollarSign, color: '#0F3460', bg: 'rgba(15, 52, 96, 0.08)' },
+  content_submitted: { icon: FileText, color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.08)' },
+  revision_requested: { icon: AlertCircle, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.08)' },
+  approved: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.08)' },
+  released: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.08)' },
+  accepted: { icon: CheckCircle, color: '#10B981', bg: 'rgba(16, 185, 129, 0.08)' },
+  rejected: { icon: XCircle, color: '#EF4444', bg: 'rgba(239, 68, 68, 0.08)' },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -101,10 +101,10 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto page-enter">
       {/* Welcome Header */}
-      <div className="mb-10 relative">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="mb-12 relative">
+        <div className="flex items-center gap-3 mb-3">
           <div className="inline-flex items-center gap-1.5 badge-premium text-xs">
             <Sparkles size={12} className="text-coral" />
             {isCreator ? 'Creator' : isBrand ? 'Brand' : 'User'} Dashboard
@@ -113,7 +113,7 @@ export default function DashboardPage() {
         <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">
           {getGreeting()}, {session?.user?.name?.split(' ')[0] || 'there'}!
         </h1>
-        <p className="text-gray-500 mt-2 text-base">
+        <p className="text-gray-400 mt-2.5 text-base">
           {isCreator
             ? "Here's what's happening with your creator profile"
             : "Here's what's happening with your brand campaigns"}
@@ -121,7 +121,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
         {loading ? (
           <>
             {[1, 2, 3, 4].map(i => (
@@ -201,10 +201,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions + Activity */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-7">
         {/* Quick Actions */}
-        <div className="card p-6">
-          <h2 className="heading-subtitle text-lg text-gray-900 mb-5">Quick Actions</h2>
+        <div className="card p-7">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-6">Quick Actions</h2>
           <div className="space-y-2">
             {isCreator ? (
               <>
@@ -225,8 +225,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="card-gradient p-6 relative overflow-hidden">
-          <h2 className="heading-subtitle text-lg text-gray-900 mb-5">Recent Activity</h2>
+        <div className="card p-7 relative overflow-hidden">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-6">Recent Activity</h2>
 
           {loading ? (
             <div className="space-y-3">
@@ -249,24 +249,24 @@ export default function DashboardPage() {
                   <Link
                     key={`${activity.type}-${activity.id}`}
                     href={activity.type === 'deal' ? `/deals/${activity.id}` : '/applications'}
-                    className="flex items-center gap-3 p-3 rounded-xl transition-all group hover:bg-gray-50/80"
+                    className="flex items-center gap-3.5 p-3.5 rounded-xl transition-all duration-200 group hover:bg-gray-50/80"
                   >
                     <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
                       style={{ backgroundColor: config.bg }}
                     >
                       <Icon size={16} style={{ color: config.color }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 truncate">{activity.title}</p>
-                      <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+                      <p className="text-xs text-gray-400">
                         {STATUS_LABELS[activity.status] || activity.status}
                         {activity.otherParty ? ` · ${activity.otherParty}` : ''}
                       </p>
                     </div>
                     <div className="text-right flex-shrink-0">
                       <p className="text-sm font-bold text-gray-900">₹{activity.amount.toLocaleString('en-IN')}</p>
-                      <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+                      <p className="text-xs text-gray-400">
                         {new Date(activity.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                       </p>
                     </div>
@@ -275,15 +275,15 @@ export default function DashboardPage() {
               })}
             </div>
           ) : (
-            <div className="text-center py-10">
+            <div className="text-center py-12">
               <div
-                className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-                style={{ backgroundColor: 'rgba(233, 69, 96, 0.06)' }}
+                className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center"
+                style={{ backgroundColor: 'rgba(233, 69, 96, 0.05)' }}
               >
-                <Clock size={24} style={{ color: 'var(--color-text-tertiary)' }} />
+                <Clock size={28} className="text-gray-300" />
               </div>
-              <p className="text-sm font-medium text-gray-600 mb-1">No activity yet</p>
-              <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+              <p className="text-sm font-semibold text-gray-600 mb-1">No activity yet</p>
+              <p className="text-xs text-gray-400">
                 {isCreator
                   ? 'Apply to campaigns to get started'
                   : 'Create a campaign to attract creators'}
@@ -312,20 +312,20 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3.5 p-3.5 rounded-xl border transition-all group hover:shadow-sm hover:-translate-y-0.5"
+      className="flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 group hover:shadow-sm hover:-translate-y-0.5"
       style={{ borderColor: 'var(--color-border-light)' }}
     >
       <div
-        className="p-2.5 rounded-xl transition-transform group-hover:scale-110"
-        style={{ backgroundColor: `${color}0a` }}
+        className="p-2.5 rounded-xl transition-all duration-200 group-hover:scale-110"
+        style={{ backgroundColor: `${color}08` }}
       >
         <Icon size={18} style={{ color }} />
       </div>
       <div className="flex-1">
         <p className="text-sm font-semibold text-gray-900">{title}</p>
-        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{description}</p>
+        <p className="text-xs text-gray-400">{description}</p>
       </div>
-      <ArrowRight size={16} className="text-gray-300 group-hover:text-gray-500 transition-all group-hover:translate-x-0.5" />
+      <ArrowRight size={16} className="text-gray-200 group-hover:text-gray-400 transition-all duration-200 group-hover:translate-x-0.5" />
     </Link>
   );
 }

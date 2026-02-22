@@ -44,14 +44,14 @@ interface Deal {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: typeof Clock }> = {
-  pending: { label: "Pending", color: "#F59E0B", bgColor: "rgba(245, 158, 11, 0.1)", icon: AlertCircle },
-  escrow_held: { label: "Escrow Held", color: "#0F3460", bgColor: "rgba(15, 52, 96, 0.1)", icon: Clock },
-  content_submitted: { label: "Content Submitted", color: "#0F3460", bgColor: "rgba(15, 52, 96, 0.1)", icon: Clock },
-  revision_requested: { label: "Revision Requested", color: "#F59E0B", bgColor: "rgba(245, 158, 11, 0.1)", icon: AlertCircle },
-  approved: { label: "Approved", color: "#10B981", bgColor: "rgba(16, 185, 129, 0.1)", icon: CheckCircle },
-  released: { label: "Completed", color: "#10B981", bgColor: "rgba(16, 185, 129, 0.1)", icon: CheckCircle },
-  refunded: { label: "Refunded", color: "#EF4444", bgColor: "rgba(239, 68, 68, 0.1)", icon: AlertCircle },
-  disputed: { label: "Disputed", color: "#EF4444", bgColor: "rgba(239, 68, 68, 0.1)", icon: AlertCircle },
+  pending: { label: "Pending", color: "#F59E0B", bgColor: "rgba(245, 158, 11, 0.08)", icon: AlertCircle },
+  escrow_held: { label: "Escrow Held", color: "#0F3460", bgColor: "rgba(15, 52, 96, 0.08)", icon: Clock },
+  content_submitted: { label: "Content Submitted", color: "#0F3460", bgColor: "rgba(15, 52, 96, 0.08)", icon: Clock },
+  revision_requested: { label: "Revision Requested", color: "#F59E0B", bgColor: "rgba(245, 158, 11, 0.08)", icon: AlertCircle },
+  approved: { label: "Approved", color: "#10B981", bgColor: "rgba(16, 185, 129, 0.08)", icon: CheckCircle },
+  released: { label: "Completed", color: "#10B981", bgColor: "rgba(16, 185, 129, 0.08)", icon: CheckCircle },
+  refunded: { label: "Refunded", color: "#EF4444", bgColor: "rgba(239, 68, 68, 0.08)", icon: AlertCircle },
+  disputed: { label: "Disputed", color: "#EF4444", bgColor: "rgba(239, 68, 68, 0.08)", icon: AlertCircle },
 };
 
 const PIPELINE_STEPS = ["pending", "escrow_held", "content_submitted", "approved", "released"];
@@ -61,19 +61,19 @@ function DealPipeline({ currentStatus }: { currentStatus: string }) {
   const labels = ["Pending", "Escrow", "Content", "Approved", "Released"];
 
   return (
-    <div className="flex items-center gap-1 w-full">
+    <div className="flex items-center gap-1.5 w-full">
       {PIPELINE_STEPS.map((step, i) => {
         const isCompleted = i <= currentIdx;
         const isCurrent = step === currentStatus;
         return (
           <div key={step} className="flex-1 flex flex-col items-center">
             <div
-              className="h-1.5 w-full rounded-full transition-all"
+              className="h-2 w-full rounded-full transition-all duration-500"
               style={isCompleted ? { background: isCurrent ? 'var(--color-coral)' : 'var(--color-success)' } : { backgroundColor: 'var(--color-border-light)' }}
             />
             <span
-              className="text-[10px] mt-1.5"
-              style={{ fontWeight: isCurrent ? 600 : 400, color: isCurrent ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
+              className="text-[10px] mt-2"
+              style={{ fontWeight: isCurrent ? 700 : 400, color: isCurrent ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}
             >
               {labels[i]}
             </span>
@@ -130,24 +130,24 @@ export default function DealsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto page-enter">
       {/* Header */}
-      <div className="mb-10">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="mb-12">
+        <div className="flex items-center gap-2 mb-3">
           <div className="badge-coral text-xs font-semibold uppercase tracking-wider inline-flex">
             <Handshake size={12} />
             Deals
           </div>
         </div>
         <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">My Deals</h1>
-        <p className="text-gray-500 mt-2 text-base">Manage and track your collaborations and payments</p>
+        <p className="text-gray-400 mt-2.5 text-base">Manage and track your collaborations and payments</p>
       </div>
 
       {/* Filters */}
-      <div className="card p-5 mb-8">
+      <div className="filter-bar mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>Status</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -160,7 +160,7 @@ export default function DealsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>Role</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">Role</label>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
@@ -186,7 +186,7 @@ export default function DealsPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl flex items-start gap-3" style={{ backgroundColor: 'var(--color-error-light)', border: '1px solid rgba(239, 68, 68, 0.15)' }}>
+        <div className="mb-6 p-5 rounded-xl flex items-start gap-3" style={{ backgroundColor: 'var(--color-error-light)', border: '1px solid rgba(239, 68, 68, 0.15)' }}>
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-error" />
           <p className="text-sm text-error font-medium">{error}</p>
         </div>
@@ -202,7 +202,7 @@ export default function DealsPage() {
           actionHref={!statusFilter && !roleFilter ? "/campaigns" : undefined}
         />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {deals.map((deal, index) => {
             const config = STATUS_CONFIG[deal.escrowStatus] || STATUS_CONFIG.pending;
             const StatusIcon = config.icon;
@@ -213,17 +213,17 @@ export default function DealsPage() {
                 key={deal.id}
                 href={`/deals/${deal.id}`}
                 className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 50}ms` }}
+                style={{ animationDelay: `${index * 60}ms` }}
               >
-                <div className="card-interactive p-6 h-full">
+                <div className="card-interactive p-7 h-full">
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between mb-5">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-bold text-gray-900 truncate">{deal.campaign.title}</h3>
-                      <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>with {otherParty.businessName || otherParty.displayName}</p>
+                      <h3 className="text-base font-extrabold text-gray-900 truncate">{deal.campaign.title}</h3>
+                      <p className="text-sm text-gray-400">with {otherParty.businessName || otherParty.displayName}</p>
                     </div>
                     <div
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0 ml-3"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 ml-3"
                       style={{ backgroundColor: config.bgColor, color: config.color }}
                     >
                       <StatusIcon className="w-3.5 h-3.5" />
@@ -232,12 +232,12 @@ export default function DealsPage() {
                   </div>
 
                   {/* Pipeline */}
-                  <div className="mb-5">
+                  <div className="mb-6">
                     <DealPipeline currentStatus={deal.escrowStatus} />
                   </div>
 
                   {/* Amount */}
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-5">
                     <span className="text-2xl font-extrabold text-gray-900">
                       ₹{deal.amount.toLocaleString('en-IN')}
                     </span>
@@ -245,18 +245,18 @@ export default function DealsPage() {
 
                   {/* Status alerts */}
                   {deal.revisionRequested && (
-                    <p className="text-xs font-medium px-3 py-2 rounded-lg mb-3" style={{ backgroundColor: 'var(--color-warning-light)', color: '#92400e' }}>
+                    <p className="text-xs font-medium px-3 py-2.5 rounded-lg mb-3" style={{ backgroundColor: 'var(--color-warning-light)', color: '#92400e' }}>
                       Revision requested by brand
                     </p>
                   )}
                   {deal.brandApproved && (
-                    <p className="text-xs font-medium px-3 py-2 rounded-lg mb-3" style={{ backgroundColor: 'var(--color-success-light)', color: '#065f46' }}>
+                    <p className="text-xs font-medium px-3 py-2.5 rounded-lg mb-3" style={{ backgroundColor: 'var(--color-success-light)', color: '#065f46' }}>
                       Content approved by brand
                     </p>
                   )}
 
                   {/* Footer */}
-                  <div className="pt-3 border-t flex justify-between items-center text-xs" style={{ borderColor: 'var(--color-border-light)', color: 'var(--color-text-tertiary)' }}>
+                  <div className="pt-4 border-t flex justify-between items-center text-xs" style={{ borderColor: 'var(--color-border-light)', color: 'var(--color-text-tertiary)' }}>
                     <span>Created {new Date(deal.createdAt).toLocaleDateString('en-IN')}</span>
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
                   </div>

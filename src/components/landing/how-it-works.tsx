@@ -1,98 +1,91 @@
-import { Users, Sparkles, Check } from 'lucide-react';
+import { Users, Sparkles, Check, UserPlus, Search, Banknote, Megaphone, ClipboardCheck, BarChart3 } from 'lucide-react';
 
 const CREATOR_STEPS = [
-  { title: 'Create Your Profile', desc: 'Add your Instagram, niches, rates, and portfolio. Get verified instantly.' },
-  { title: 'Browse & Apply', desc: 'Discover campaigns from local brands in your city. Apply to ones that match your style.' },
-  { title: 'Get Paid Safely', desc: 'Payment held in escrow until brand approves content. Get rated and build credibility.' },
+  { icon: UserPlus, title: 'Create Your Profile', desc: 'Add your Instagram, niches, rates, and portfolio. Get verified instantly.', color: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/20' },
+  { icon: Search, title: 'Browse & Apply', desc: 'Discover campaigns from local brands in your city. Apply to ones that match your style.', color: 'from-orange-500 to-amber-600', shadow: 'shadow-orange-500/20' },
+  { icon: Banknote, title: 'Get Paid Safely', desc: 'Payment held in escrow until brand approves content. Get rated and build credibility.', color: 'from-emerald-500 to-green-600', shadow: 'shadow-emerald-500/20' },
 ];
 
 const BRAND_STEPS = [
-  { title: 'Register Your Brand', desc: 'Set up your brand profile with category, city, and budget. Verify instantly.' },
-  { title: 'Launch Campaigns', desc: 'Post campaigns with specific requirements. Review creator applications and hire the best fits.' },
-  { title: 'Pay & Get Reports', desc: 'Approve content and release payment. Track reach, engagement, and ROI in real-time.' },
+  { icon: Megaphone, title: 'Register Your Brand', desc: 'Set up your brand profile with category, city, and budget. Verify instantly.', color: 'from-blue-600 to-indigo-700', shadow: 'shadow-blue-500/20' },
+  { icon: ClipboardCheck, title: 'Launch Campaigns', desc: 'Post campaigns with specific requirements. Review creator applications and hire the best fits.', color: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/20' },
+  { icon: BarChart3, title: 'Pay & Get Reports', desc: 'Approve content and release payment. Track reach, engagement, and ROI in real-time.', color: 'from-emerald-500 to-green-600', shadow: 'shadow-emerald-500/20' },
 ];
 
-function StepList({
-  steps,
-  accentColor,
-  gradient,
+function StepCard({
+  step,
+  index,
 }: {
-  steps: typeof CREATOR_STEPS;
-  accentColor: string;
-  gradient: string;
+  step: typeof CREATOR_STEPS[0];
+  index: number;
 }) {
+  const Icon = step.icon;
   return (
-    <div className="space-y-0">
-      {steps.map((step, i) => (
-        <div key={i} className="flex gap-5 group">
-          <div className="relative flex flex-col items-center">
-            <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-white text-sm flex-shrink-0 transition-all group-hover:scale-110 group-hover:shadow-lg"
-              style={{ background: gradient }}
-            >
-              {i === steps.length - 1 ? <Check size={18} /> : i + 1}
-            </div>
-            {i < steps.length - 1 && (
-              <div
-                className="w-px flex-1 min-h-[24px] mt-2"
-                style={{ background: `linear-gradient(to bottom, ${accentColor}40, ${accentColor}08)` }}
-              />
-            )}
-          </div>
-          <div className="pb-8 last:pb-0">
-            <h4 className="font-bold text-gray-900 text-lg mb-1.5">{step.title}</h4>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-sm">{step.desc}</p>
-          </div>
+    <div className="flex gap-5 items-start">
+      <div className="flex flex-col items-center">
+        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg ${step.shadow} flex-shrink-0`}>
+          <Icon size={24} className="text-white" />
         </div>
-      ))}
+        {index < 2 && (
+          <div className="w-0.5 h-12 bg-gradient-to-b from-gray-200 to-transparent mt-3" />
+        )}
+      </div>
+      <div className="pt-1 pb-8">
+        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Step {index + 1}</div>
+        <h4 className="font-bold text-gray-900 text-lg mb-1.5">{step.title}</h4>
+        <p className="text-sm text-gray-500 leading-relaxed max-w-sm">{step.desc}</p>
+      </div>
     </div>
   );
 }
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-28 px-4 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 dot-pattern opacity-30" />
-
-      <div className="relative max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <div className="badge-premium text-xs font-semibold uppercase tracking-wider mb-4 inline-flex">
+    <section id="how-it-works" className="relative py-28 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="max-w-7xl mx-auto">
+        {/* Section header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 text-rose-600 text-xs font-bold uppercase tracking-wider mb-5">
+            <Sparkles size={14} />
             Simple Process
           </div>
-          <h2 className="heading-display text-4xl sm:text-5xl lg:text-6xl text-gray-900 text-balance">
+          <h2 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight mb-4">
             How It Works
           </h2>
+          <p className="text-gray-500 text-lg max-w-lg mx-auto">
+            Three simple steps to start collaborating
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           {/* For Creators */}
-          <div className="card-bento p-8 sm:p-10">
-            <h3 className="text-xl font-bold mb-10 flex items-center gap-3 text-gray-900">
-              <div className="p-2.5 rounded-2xl" style={{ backgroundColor: 'rgba(233, 69, 96, 0.08)' }}>
-                <Users size={22} className="text-coral" />
+          <div className="bg-gradient-to-br from-rose-50/80 to-pink-50/40 rounded-3xl p-8 sm:p-10 border border-rose-100/60 shadow-sm hover:shadow-lg transition-shadow duration-500">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 shadow-lg shadow-rose-500/20">
+                <Users size={22} className="text-white" />
               </div>
-              For Creators
-            </h3>
-            <StepList
-              steps={CREATOR_STEPS}
-              accentColor="#E94560"
-              gradient="linear-gradient(135deg, #E94560, #d63749)"
-            />
+              <h3 className="text-xl font-black text-gray-900">For Creators</h3>
+            </div>
+            <div>
+              {CREATOR_STEPS.map((step, i) => (
+                <StepCard key={i} step={step} index={i} />
+              ))}
+            </div>
           </div>
 
           {/* For Brands */}
-          <div className="card-bento p-8 sm:p-10">
-            <h3 className="text-xl font-bold mb-10 flex items-center gap-3 text-gray-900">
-              <div className="p-2.5 rounded-2xl" style={{ backgroundColor: 'rgba(15, 52, 96, 0.08)' }}>
-                <Sparkles size={22} className="text-blue" />
+          <div className="bg-gradient-to-br from-blue-50/80 to-indigo-50/40 rounded-3xl p-8 sm:p-10 border border-blue-100/60 shadow-sm hover:shadow-lg transition-shadow duration-500">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-500/20">
+                <Sparkles size={22} className="text-white" />
               </div>
-              For Brands
-            </h3>
-            <StepList
-              steps={BRAND_STEPS}
-              accentColor="#0F3460"
-              gradient="linear-gradient(135deg, #0F3460, #1a4a8a)"
-            />
+              <h3 className="text-xl font-black text-gray-900">For Brands</h3>
+            </div>
+            <div>
+              {BRAND_STEPS.map((step, i) => (
+                <StepCard key={i} step={step} index={i} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

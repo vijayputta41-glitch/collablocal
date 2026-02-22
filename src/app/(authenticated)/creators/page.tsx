@@ -76,38 +76,38 @@ export default function CreatorsPage() {
   const hasActiveFilters = cityFilter || nicheFilter || searchQuery || sortBy !== 'rating';
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto page-enter">
       {/* Header */}
-      <div className="mb-10">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="mb-12">
+        <div className="flex items-center gap-2 mb-3">
           <div className="badge-blue text-xs font-semibold uppercase tracking-wider inline-flex">
             <Users size={12} />
             Creators
           </div>
         </div>
         <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">Discover Creators</h1>
-        <p className="text-gray-500 mt-2 text-base">Find talented creators in your city and collaborate with them</p>
+        <p className="text-gray-400 mt-2.5 text-base">Find talented creators in your city and collaborate with them</p>
       </div>
 
       {/* Filters */}
-      <div className="card p-5 mb-8">
+      <div className="filter-bar mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="lg:col-span-2">
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>Search</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">Search</label>
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-tertiary)' }} />
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" />
               <input
                 type="text"
                 placeholder="Search by name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-9"
+                className="input-field pl-10"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>City</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">City</label>
             <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="input-field">
               <option value="">All Cities</option>
               {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
@@ -115,7 +115,7 @@ export default function CreatorsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>Niche</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">Niche</label>
             <select value={nicheFilter} onChange={(e) => setNicheFilter(e.target.value)} className="input-field">
               <option value="">All Niches</option>
               {NICHES.map(niche => <option key={niche} value={niche}>{niche}</option>)}
@@ -123,7 +123,7 @@ export default function CreatorsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-secondary)' }}>Sort By</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider mb-2.5 text-gray-400">Sort By</label>
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="input-field">
               <option value="rating">Highest Rating</option>
               <option value="followers">Most Followers</option>
@@ -152,25 +152,25 @@ export default function CreatorsPage() {
           description="Try adjusting your filters to find creators near you"
         />
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
           {creators.map((creator, index) => (
             <Link
               key={creator.id}
               href={`/creator/${creator.id}`}
               className="animate-fade-in-up"
-              style={{ animationDelay: `${index * 50}ms` }}
+              style={{ animationDelay: `${index * 60}ms` }}
             >
-              <div className="card-interactive p-6 h-full">
+              <div className="card-interactive p-7 h-full">
                 {/* Profile Section */}
-                <div className="flex items-start gap-4 mb-4">
+                <div className="flex items-start gap-4 mb-5">
                   <Avatar
                     src={creator.user?.image}
                     alt={creator.displayName}
                     size="lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-gray-900 truncate">{creator.displayName}</h3>
-                    <div className="flex items-center gap-1.5 text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+                    <h3 className="text-base font-extrabold text-gray-900 truncate">{creator.displayName}</h3>
+                    <div className="flex items-center gap-1.5 text-sm mt-1.5 text-gray-400">
                       <MapPin size={14} />
                       {creator.city}
                     </div>
@@ -181,7 +181,7 @@ export default function CreatorsPage() {
                 </div>
 
                 {/* Niches */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-5">
                   {creator.niches.slice(0, 3).map(niche => (
                     <span key={niche} className="badge text-xs">{niche}</span>
                   ))}
@@ -191,10 +191,10 @@ export default function CreatorsPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="rounded-xl p-4 mb-4 space-y-3" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+                <div className="rounded-xl p-4 mb-5 space-y-3" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
                   {creator.followerCount !== null && (
                     <div className="flex justify-between items-center">
-                      <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>Followers</span>
+                      <span className="text-xs text-gray-400">Followers</span>
                       <span className="text-sm font-bold text-gray-900">
                         {creator.followerCount >= 1000
                           ? `${(creator.followerCount / 1000).toFixed(1)}K`
@@ -204,19 +204,19 @@ export default function CreatorsPage() {
                   )}
                   {creator.engagementRate !== null && (
                     <div className="flex justify-between items-center">
-                      <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>Engagement</span>
+                      <span className="text-xs text-gray-400">Engagement</span>
                       <span className="text-sm font-bold text-gray-900">{(creator.engagementRate * 100).toFixed(1)}%</span>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
-                    <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>Rating</span>
+                    <span className="text-xs text-gray-400">Rating</span>
                     <StarRating rating={creator.avgRating} size={14} />
                   </div>
                 </div>
 
                 {/* Rate */}
                 <div className="flex justify-between items-center pt-4 border-t" style={{ borderColor: 'var(--color-border-light)' }}>
-                  <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>Rate Range</span>
+                  <span className="text-xs text-gray-400">Rate Range</span>
                   <span className="text-sm font-bold text-coral">
                     ₹{creator.rateMin.toLocaleString('en-IN')} - ₹{creator.rateMax.toLocaleString('en-IN')}
                   </span>

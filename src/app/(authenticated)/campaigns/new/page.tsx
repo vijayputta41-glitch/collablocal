@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CITIES, NICHES, CONTENT_TYPES } from '@/lib/constants';
-import { ArrowRight, Loader } from 'lucide-react';
+import { ArrowRight, Loader, ArrowLeft, Sparkles, Check, Info } from 'lucide-react';
 
 export default function CreateCampaignPage() {
   const router = useRouter();
@@ -59,24 +59,31 @@ export default function CreateCampaignPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-12">
+    <div className="max-w-3xl mx-auto page-enter">
       {/* Header */}
-      <div className="mb-8">
-        <Link href="/campaigns" className="text-sm font-semibold" style={{ color: '#E94560' }}>
-          ← Back to Campaigns
+      <div className="mb-10">
+        <Link href="/campaigns" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-gray-900 transition-colors mb-6">
+          <ArrowLeft size={16} />
+          Back to Campaigns
         </Link>
-        <h1 className="text-4xl font-bold text-gray-900 mt-4 mb-2">Launch a Campaign</h1>
-        <p className="text-gray-600">Create a new campaign and find the perfect creators for your brand</p>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="badge-blue text-xs font-semibold uppercase tracking-wider inline-flex">
+            <Sparkles size={12} />
+            New Campaign
+          </div>
+        </div>
+        <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">Launch a Campaign</h1>
+        <p className="text-gray-400 mt-2.5 text-base">Create a new campaign and find the perfect creators for your brand</p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="card p-8 space-y-8">
+      <form onSubmit={handleSubmit} className="card p-8 sm:p-10 space-y-10">
         {/* Campaign Details */}
         <div>
-          <h2 className="text-xl font-bold mb-4 pb-4 border-b border-gray-200">Campaign Details</h2>
-          <div className="space-y-4">
+          <h2 className="text-lg font-extrabold text-gray-900 mb-6 pb-4 border-b" style={{ borderColor: 'var(--color-border-light)' }}>Campaign Details</h2>
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Campaign Title *</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2.5">Campaign Title *</label>
               <input
                 type="text"
                 name="title"
@@ -89,20 +96,20 @@ export default function CreateCampaignPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Description *</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2.5">Description *</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 required
-                className="input-field min-h-24"
+                className="input-field min-h-28"
                 placeholder="Describe your campaign, what you're looking for, and any specific requirements"
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">City *</label>
+                <label className="block text-sm font-semibold text-gray-900 mb-2.5">City *</label>
                 <select
                   name="city"
                   value={formData.city}
@@ -120,7 +127,7 @@ export default function CreateCampaignPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Content Type *</label>
+                <label className="block text-sm font-semibold text-gray-900 mb-2.5">Content Type *</label>
                 <select
                   name="contentType"
                   value={formData.contentType}
@@ -142,31 +149,40 @@ export default function CreateCampaignPage() {
 
         {/* Target Audience */}
         <div>
-          <h2 className="text-xl font-bold mb-4 pb-4 border-b border-gray-200">Target Audience</h2>
+          <h2 className="text-lg font-extrabold text-gray-900 mb-6 pb-4 border-b" style={{ borderColor: 'var(--color-border-light)' }}>Target Audience</h2>
           <div>
             <label className="block text-sm font-semibold text-gray-900 mb-3">Select Niches *</label>
             <div className="grid grid-cols-2 gap-3">
-              {NICHES.map(niche => (
-                <label key={niche} className="flex items-center gap-3 p-3 rounded-lg border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={formData.niches.includes(niche)}
-                    onChange={() => handleNicheToggle(niche)}
-                    className="w-4 h-4 rounded"
-                  />
-                  <span className="text-sm font-medium text-gray-900">{niche}</span>
-                </label>
-              ))}
+              {NICHES.map(niche => {
+                const isSelected = formData.niches.includes(niche);
+                return (
+                  <label
+                    key={niche}
+                    className={`flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all duration-200 ${
+                      isSelected
+                        ? 'border-coral/30 bg-coral/5 shadow-sm'
+                        : 'border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${
+                      isSelected ? 'bg-coral text-white' : 'border-2 border-gray-300'
+                    }`}>
+                      {isSelected && <Check size={12} />}
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{niche}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         </div>
 
         {/* Budget & Timeline */}
         <div>
-          <h2 className="text-xl font-bold mb-4 pb-4 border-b border-gray-200">Budget & Timeline</h2>
-          <div className="space-y-4">
+          <h2 className="text-lg font-extrabold text-gray-900 mb-6 pb-4 border-b" style={{ borderColor: 'var(--color-border-light)' }}>Budget & Timeline</h2>
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Budget per Creator (₹) *</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2.5">Budget per Creator (₹) *</label>
               <input
                 type="number"
                 name="budgetPerCreator"
@@ -176,12 +192,12 @@ export default function CreateCampaignPage() {
                 className="input-field"
                 placeholder="e.g., 15000"
               />
-              <p className="text-xs text-gray-600 mt-1">The amount each selected creator will earn</p>
+              <p className="text-xs text-gray-400 mt-1.5">The amount each selected creator will earn</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Number of Creators *</label>
+                <label className="block text-sm font-semibold text-gray-900 mb-2.5">Number of Creators *</label>
                 <input
                   type="number"
                   name="maxCreators"
@@ -195,7 +211,7 @@ export default function CreateCampaignPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">Deadline *</label>
+                <label className="block text-sm font-semibold text-gray-900 mb-2.5">Deadline *</label>
                 <input
                   type="date"
                   name="deadline"
@@ -207,16 +223,17 @@ export default function CreateCampaignPage() {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-900">
-                <strong>Total Budget:</strong> ₹{(formData.budgetPerCreator * formData.maxCreators).toLocaleString('en-IN')}
+            <div className="rounded-xl p-5 flex items-center gap-3" style={{ background: 'linear-gradient(135deg, rgba(15, 52, 96, 0.04), rgba(15, 52, 96, 0.08))', border: '1px solid rgba(15, 52, 96, 0.1)' }}>
+              <Info size={18} style={{ color: '#0F3460' }} />
+              <p className="text-sm font-semibold" style={{ color: '#0F3460' }}>
+                Total Budget: ₹{(formData.budgetPerCreator * formData.maxCreators).toLocaleString('en-IN')}
               </p>
             </div>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="flex gap-4 pt-4 border-t border-gray-200">
+        <div className="flex gap-4 pt-6 border-t" style={{ borderColor: 'var(--color-border-light)' }}>
           <button
             type="button"
             onClick={() => router.back()}
@@ -245,26 +262,23 @@ export default function CreateCampaignPage() {
       </form>
 
       {/* Info Box */}
-      <div className="mt-8 card p-6 bg-gray-50">
-        <h3 className="font-semibold text-gray-900 mb-3">Campaign Tips</h3>
-        <ul className="space-y-2 text-sm text-gray-700">
-          <li className="flex gap-2">
-            <span>✓</span>
-            <span>Be specific about what you're looking for in creators</span>
-          </li>
-          <li className="flex gap-2">
-            <span>✓</span>
-            <span>Clear budgets and timelines attract quality creators</span>
-          </li>
-          <li className="flex gap-2">
-            <span>✓</span>
-            <span>Select multiple niches to get more applications</span>
-          </li>
-          <li className="flex gap-2">
-            <span>✓</span>
-            <span>Money is held safely in escrow until you approve content</span>
-          </li>
-        </ul>
+      <div className="mt-8 card p-7" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+        <h3 className="font-extrabold text-gray-900 mb-4 text-sm">Campaign Tips</h3>
+        <div className="space-y-3 text-sm text-gray-500">
+          {[
+            'Be specific about what you\'re looking for in creators',
+            'Clear budgets and timelines attract quality creators',
+            'Select multiple niches to get more applications',
+            'Money is held safely in escrow until you approve content',
+          ].map((tip, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <div className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
+                <Check size={12} className="text-green-600" />
+              </div>
+              <span>{tip}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

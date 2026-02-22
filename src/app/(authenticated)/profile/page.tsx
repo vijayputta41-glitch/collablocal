@@ -161,27 +161,27 @@ export default function ProfilePage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="flex items-center justify-center py-16">
+      <div className="flex items-center justify-center py-20">
         <div className="text-center">
-          <Loader size={40} className="mx-auto mb-4 animate-spin" style={{ color: 'var(--color-text-tertiary)' }} />
-          <p style={{ color: 'var(--color-text-secondary)' }}>Loading profile...</p>
+          <Loader size={40} className="mx-auto mb-4 animate-spin text-gray-300" />
+          <p className="text-gray-400">Loading profile...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto page-enter">
       {/* Header */}
-      <div className="mb-10">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="mb-12">
+        <div className="flex items-center gap-2 mb-3">
           <div className="badge-premium text-xs font-semibold uppercase tracking-wider inline-flex">
             <User size={12} />
             Profile
           </div>
         </div>
         <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">My Profile</h1>
-        <p className="text-gray-500 mt-2 text-base">Manage your profile information and keep it up to date</p>
+        <p className="text-gray-400 mt-2.5 text-base">Manage your profile information and keep it up to date</p>
       </div>
 
       {/* Toast Notifications */}
@@ -194,8 +194,8 @@ export default function ProfilePage() {
 
       {/* Creator Profile Form */}
       {userRole === 'creator' && (
-        <form onSubmit={handleCreatorSubmit} className="card p-8">
-          <h2 className="heading-subtitle text-2xl text-gray-900 mb-8">Creator Profile</h2>
+        <form onSubmit={handleCreatorSubmit} className="card p-8 sm:p-10">
+          <h2 className="text-xl font-extrabold text-gray-900 mb-8">Creator Profile</h2>
 
           <div className="space-y-6">
             <FormField label="Display Name *">
@@ -208,7 +208,7 @@ export default function ProfilePage() {
 
             <FormField label="Instagram Handle">
               <div className="flex items-center">
-                <span className="text-gray-700 font-medium mr-2">@</span>
+                <span className="text-gray-500 font-medium mr-2">@</span>
                 <input type="text" value={creatorForm.instagramHandle} onChange={(e) => setCreatorForm({ ...creatorForm, instagramHandle: e.target.value })} className="input-field flex-1" placeholder="yourhandle" />
               </div>
             </FormField>
@@ -221,7 +221,7 @@ export default function ProfilePage() {
             </FormField>
 
             <FormField label="Niches *">
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 {NICHES.map(niche => {
                   const isSelected = creatorForm.niches.includes(niche);
                   return (
@@ -229,8 +229,8 @@ export default function ProfilePage() {
                       key={niche}
                       type="button"
                       onClick={() => handleCreatorNicheChange(niche)}
-                      className={`px-3 py-2 rounded-xl text-sm font-medium transition-all border text-left ${
-                        isSelected ? 'border-transparent text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+                      className={`px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border text-left ${
+                        isSelected ? 'border-transparent text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:border-gray-300'
                       }`}
                       style={isSelected ? { backgroundColor: 'var(--color-coral)' } : { borderColor: 'var(--color-border)' }}
                     >
@@ -249,7 +249,7 @@ export default function ProfilePage() {
               <input type="number" value={creatorForm.engagementRate} onChange={(e) => setCreatorForm({ ...creatorForm, engagementRate: e.target.value })} className="input-field" placeholder="e.g., 0.05" step="0.001" min="0" max="1" />
             </FormField>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-5">
               <FormField label="Minimum Rate (₹) *">
                 <input type="number" value={creatorForm.minRate} onChange={(e) => setCreatorForm({ ...creatorForm, minRate: e.target.value })} className="input-field" placeholder="e.g., 5000" min="0" />
               </FormField>
@@ -263,7 +263,7 @@ export default function ProfilePage() {
             </FormField>
           </div>
 
-          <button type="submit" disabled={isSaving} className="btn-primary w-full mt-8 py-3.5 group">
+          <button type="submit" disabled={isSaving} className="btn-primary w-full mt-10 py-4 group text-base">
             {isSaving ? <><Loader size={18} className="animate-spin" /> Saving...</> : 'Save Profile'}
           </button>
         </form>
@@ -271,8 +271,8 @@ export default function ProfilePage() {
 
       {/* Brand Profile Form */}
       {userRole === 'brand' && (
-        <form onSubmit={handleBrandSubmit} className="card p-8">
-          <h2 className="heading-subtitle text-2xl text-gray-900 mb-8">Brand Profile</h2>
+        <form onSubmit={handleBrandSubmit} className="card p-8 sm:p-10">
+          <h2 className="text-xl font-extrabold text-gray-900 mb-8">Brand Profile</h2>
 
           <div className="space-y-6">
             <FormField label="Business Name *">
@@ -299,7 +299,7 @@ export default function ProfilePage() {
 
             <FormField label="Instagram Handle">
               <div className="flex items-center">
-                <span className="text-gray-700 font-medium mr-2">@</span>
+                <span className="text-gray-500 font-medium mr-2">@</span>
                 <input type="text" value={brandForm.instagramHandle} onChange={(e) => setBrandForm({ ...brandForm, instagramHandle: e.target.value })} className="input-field flex-1" placeholder="yourbrand" />
               </div>
             </FormField>
@@ -313,7 +313,7 @@ export default function ProfilePage() {
             </FormField>
           </div>
 
-          <button type="submit" disabled={isSaving} className="btn-primary w-full mt-8 py-3.5 group">
+          <button type="submit" disabled={isSaving} className="btn-primary w-full mt-10 py-4 group text-base">
             {isSaving ? <><Loader size={18} className="animate-spin" /> Saving...</> : 'Save Profile'}
           </button>
         </form>
@@ -321,12 +321,12 @@ export default function ProfilePage() {
 
       {/* No Role Message */}
       {!userRole && !isLoading && (
-        <div className="card p-10 text-center">
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center" style={{ backgroundColor: 'rgba(233, 69, 96, 0.06)' }}>
-            <AlertCircle size={32} style={{ color: 'var(--color-text-tertiary)' }} />
+        <div className="card p-12 text-center">
+          <div className="w-20 h-20 rounded-3xl mx-auto mb-6 flex items-center justify-center" style={{ backgroundColor: 'rgba(233, 69, 96, 0.05)' }}>
+            <AlertCircle size={36} className="text-gray-300" />
           </div>
-          <h2 className="heading-subtitle text-2xl text-gray-900 mb-2">No profile found</h2>
-          <p style={{ color: 'var(--color-text-secondary)' }}>Please complete your onboarding to create your profile</p>
+          <h2 className="text-xl font-extrabold text-gray-900 mb-2">No profile found</h2>
+          <p className="text-gray-400">Please complete your onboarding to create your profile</p>
         </div>
       )}
     </div>
@@ -336,7 +336,7 @@ export default function ProfilePage() {
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-900 mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-gray-900 mb-2.5">{label}</label>
       {children}
     </div>
   );

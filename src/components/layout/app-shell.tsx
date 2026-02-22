@@ -19,6 +19,7 @@ import {
   Inbox,
   FileText,
   Settings,
+  Search,
 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 
@@ -46,7 +47,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [status, router]);
 
-  // Close sidebar on route change
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
@@ -55,8 +55,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
         <div className="text-center">
-          <div className="w-10 h-10 rounded-full border-4 animate-spin mx-auto" style={{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-coral)' }} />
-          <p className="mt-4 text-sm text-gray-500">Loading...</p>
+          <div className="w-12 h-12 rounded-2xl border-4 animate-spin mx-auto" style={{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-coral)' }} />
+          <p className="mt-5 text-sm font-medium" style={{ color: 'var(--color-text-tertiary)' }}>Loading your workspace...</p>
         </div>
       </div>
     );
@@ -74,7 +74,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   };
 
-  // Build breadcrumbs from pathname
   const segments = pathname.split('/').filter(Boolean);
   const breadcrumbs = segments.map((seg, i) => ({
     label: seg.charAt(0).toUpperCase() + seg.slice(1).replace(/-/g, ' '),
@@ -83,42 +82,49 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }));
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+    <div className="min-h-screen lg:flex" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 w-[260px] z-40 transform transition-transform duration-300 ease-out ${
+        className={`fixed inset-y-0 left-0 w-[272px] z-40 transform transition-transform duration-300 ease-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 lg:static flex flex-col border-r`}
         style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border-light)' }}
       >
         {/* Logo */}
-        <div className="px-6 py-5 border-b" style={{ borderColor: 'var(--color-border-light)' }}>
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-coral-blue flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+        <div className="px-6 py-6 border-b" style={{ borderColor: 'var(--color-border-light)' }}>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl gradient-coral-blue flex items-center justify-center transition-all group-hover:scale-105" style={{ boxShadow: '0 4px 12px rgba(233, 69, 96, 0.25)' }}>
               <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="font-extrabold text-lg tracking-tight" style={{ color: 'var(--color-navy-light)' }}>
-              CollabLocal
-            </span>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight block" style={{ color: 'var(--color-navy-light)' }}>
+                CollabLocal
+              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'var(--color-text-tertiary)' }}>
+                {userRole === 'creator' ? 'Creator Studio' : 'Brand Hub'}
+              </span>
+            </div>
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] px-3 mb-3" style={{ color: 'var(--color-text-tertiary)' }}>
+            Navigation
+          </p>
           {filteredNav.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  active
-                    ? 'nav-link-active'
-                    : 'nav-link-inactive'
-                }`}
+                className={`nav-link-premium ${active ? 'active' : ''}`}
               >
                 <item.icon size={18} />
-                {item.label}
+                <span>{item.label}</span>
+                {active && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white/60" />
+                )}
               </Link>
             );
           })}
@@ -126,7 +132,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* User Section */}
         <div className="p-4 border-t" style={{ borderColor: 'var(--color-border-light)' }}>
-          <div className="flex items-center gap-3 px-3 py-3 rounded-xl mb-3" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+          <div className="flex items-center gap-3 px-3 py-3.5 rounded-2xl mb-3 transition-colors hover:bg-gray-50" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
             <Avatar
               src={session.user?.image}
               alt={session.user?.name || 'User'}
@@ -136,14 +142,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <p className="text-sm font-semibold text-gray-900 truncate">
                 {session.user?.name || session.user?.email}
               </p>
-              <p className="text-xs capitalize" style={{ color: 'var(--color-text-tertiary)' }}>
+              <p className="text-xs capitalize font-medium" style={{ color: 'var(--color-text-tertiary)' }}>
                 {userRole || 'User'}
               </p>
             </div>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="w-full btn-ghost text-sm text-gray-500 hover:text-red-600 justify-start px-3"
+            className="w-full btn-ghost text-sm text-gray-500 hover:text-red-600 justify-start px-3 gap-2.5"
           >
             <LogOut size={16} />
             Sign Out
@@ -161,11 +167,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main area */}
-      <div className="lg:ml-0 flex flex-col min-h-screen">
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', borderColor: 'var(--color-border-light)' }}>
-          <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
-            {/* Left: hamburger + breadcrumbs */}
+        <header className="header-premium sticky top-0 z-20">
+          <div className="flex items-center justify-between px-5 sm:px-6 lg:px-8 h-[72px]">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -174,9 +179,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
 
-              <nav className="hidden sm:flex items-center gap-1 text-sm">
+              <nav className="hidden sm:flex items-center gap-1.5 text-sm">
                 {breadcrumbs.map((crumb) => (
-                  <span key={crumb.href} className="flex items-center gap-1">
+                  <span key={crumb.href} className="flex items-center gap-1.5">
                     {!crumb.isLast ? (
                       <>
                         <Link
@@ -189,20 +194,32 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         <ChevronRight size={14} style={{ color: 'var(--color-border)' }} />
                       </>
                     ) : (
-                      <span className="font-medium" style={{ color: 'var(--color-text-primary)' }}>{crumb.label}</span>
+                      <span className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>{crumb.label}</span>
                     )}
                   </span>
                 ))}
               </nav>
             </div>
 
-            {/* Right: notifications + avatar */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              <div className="relative hidden md:block">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-tertiary)' }} />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-48 lg:w-56 h-10 pl-10 pr-12 rounded-xl border text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-300/50 transition-all"
+                  style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface-secondary)' }}
+                />
+                <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-md text-[10px] font-medium border" style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-tertiary)', backgroundColor: 'var(--color-surface)' }}>
+                  /
+                </kbd>
+              </div>
+
               <button className="btn-icon relative">
                 <Bell size={18} style={{ color: 'var(--color-text-secondary)' }} />
                 <span className="notification-dot absolute top-1.5 right-1.5" />
               </button>
-              <div className="w-px h-6 mx-1" style={{ backgroundColor: 'var(--color-border-light)' }} />
+              <div className="w-px h-6 mx-0.5" style={{ backgroundColor: 'var(--color-border-light)' }} />
               <Avatar
                 src={session.user?.image}
                 alt={session.user?.name || 'User'}
@@ -213,8 +230,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <div className="animate-fade-in">
+        <main className="flex-1 p-5 sm:p-6 lg:p-8">
+          <div className="page-enter">
             {children}
           </div>
         </main>

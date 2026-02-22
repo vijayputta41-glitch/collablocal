@@ -85,67 +85,67 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
   return (
     <div className="max-w-6xl mx-auto">
       {/* Back Button */}
-      <Link href="/campaigns" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors mb-6">
+      <Link href="/campaigns" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-gray-900 transition-colors mb-8">
         <ArrowLeft size={16} />
         Back to Campaigns
       </Link>
 
       {/* Hero Section */}
-      <div className="card overflow-hidden mb-6">
+      <div className="card overflow-hidden mb-8">
         <div
-          className="h-3"
+          className="h-1.5"
           style={{ background: 'linear-gradient(90deg, #E94560, #0F3460)' }}
         />
-        <div className="p-6 sm:p-8">
+        <div className="p-7 sm:p-10">
           {/* Status + Date Row */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-5">
             {campaign.status === 'active' && !isDeadlinePassed ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                 Active
               </span>
             ) : isDeadlinePassed ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-200">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-200">
                 <Clock size={12} />
                 Deadline Passed
               </span>
             ) : (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
                 {campaign.status === 'paused' ? 'Paused' : 'Completed'}
               </span>
             )}
             <span className="badge-coral text-xs">{campaign.contentType}</span>
             {!isDeadlinePassed && (
-              <span className="text-xs text-gray-500 flex items-center gap-1">
+              <span className="text-xs text-gray-400 flex items-center gap-1">
                 <Clock size={12} />
                 {daysLeft} days left
               </span>
             )}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">{campaign.title}</h1>
-          <p className="text-gray-500 text-base leading-relaxed max-w-3xl">{campaign.description}</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">{campaign.title}</h1>
+          <p className="text-gray-400 text-base leading-relaxed max-w-3xl">{campaign.description}</p>
 
           {/* Key Metrics */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Budget / Creator</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-10">
+            <div className="rounded-2xl p-5" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Budget / Creator</p>
               <p className="text-2xl font-extrabold text-gray-900">₹{campaign.budgetPerCreator.toLocaleString('en-IN')}</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <div className="rounded-2xl p-5" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <MapPin size={12} /> Location
               </p>
               <p className="text-lg font-bold text-gray-900">{campaign.city}</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <div className="rounded-2xl p-5" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <Calendar size={12} /> Deadline
               </p>
               <p className="text-lg font-bold text-gray-900">{formatDate(campaign.deadline)}</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+            <div className="rounded-2xl p-5" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <Users size={12} /> Slots Available
               </p>
               <p className="text-lg font-bold text-gray-900">{slotsRemaining} of {campaign.maxCreators}</p>
@@ -153,8 +153,8 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
           </div>
 
           {/* Niches */}
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Target Niches</p>
+          <div className="mt-7">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Target Niches</p>
             <div className="flex flex-wrap gap-2">
               {campaign.niches.map((niche: string) => (
                 <span key={niche} className="badge text-sm">{niche}</span>
@@ -164,42 +164,42 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-7">
         {/* Left Column */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-7">
           {/* Applications Progress */}
-          <div className="card p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="card p-7">
+            <h2 className="text-lg font-extrabold text-gray-900 mb-5 flex items-center gap-2">
               <Zap size={20} style={{ color: '#E94560' }} />
               Application Progress
             </h2>
-            <div className="flex items-end gap-4 mb-4">
+            <div className="flex items-end gap-4 mb-5">
               <div>
                 <p className="text-4xl font-extrabold text-gray-900">{totalApplications}</p>
-                <p className="text-sm text-gray-500">total applications</p>
+                <p className="text-sm text-gray-400">total applications</p>
               </div>
               <div className="ml-auto text-right">
                 <p className="text-2xl font-bold" style={{ color: '#E94560' }}>{slotsFilled}</p>
-                <p className="text-sm text-gray-500">accepted</p>
+                <p className="text-sm text-gray-400">accepted</p>
               </div>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+            <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
               <div
-                className="h-full rounded-full transition-all duration-500"
+                className="h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${Math.min(100, (slotsFilled / campaign.maxCreators) * 100)}%`,
                   background: 'linear-gradient(90deg, #E94560, #0F3460)',
                 }}
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-gray-400 mt-2.5">
               {Math.round((slotsFilled / campaign.maxCreators) * 100)}% slots filled
             </p>
           </div>
 
           {/* CTA Section */}
           {isCreator && (
-            <div className="card p-6">
+            <div className="card p-7">
               {!isClosed && !isDeadlinePassed ? (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   {hasApplied ? (
@@ -216,8 +216,8 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
                   ) : (
                     <>
                       <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 mb-1">Interested in this campaign?</h3>
-                        <p className="text-sm text-gray-500">Submit your pitch and stand out to the brand</p>
+                        <h3 className="font-extrabold text-gray-900 mb-1">Interested in this campaign?</h3>
+                        <p className="text-sm text-gray-400">Submit your pitch and stand out to the brand</p>
                       </div>
                       <Link href={`/campaigns/${campaign.id}/apply`} className="btn-primary px-8">
                         Apply Now
@@ -226,8 +226,8 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
                   )}
                 </div>
               ) : (
-                <div className="text-center py-4">
-                  <p className="text-gray-500 font-medium">
+                <div className="text-center py-5">
+                  <p className="text-gray-400 font-medium">
                     {isDeadlinePassed ? 'The deadline for this campaign has passed' : 'All slots have been filled'}
                   </p>
                 </div>
@@ -237,8 +237,8 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
 
           {/* Brand's own campaign management */}
           {isOwner && (
-            <div className="card p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-3">Manage Campaign</h2>
+            <div className="card p-7">
+              <h2 className="text-lg font-extrabold text-gray-900 mb-4">Manage Campaign</h2>
               <div className="flex flex-wrap gap-3">
                 <Link href="/applications" className="btn-primary text-sm">
                   <Users size={16} />
@@ -254,43 +254,43 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
 
         {/* Right Column - Brand Card */}
         <div>
-          <div className="card p-6 sticky top-24">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <div className="card p-7 sticky top-24">
+            <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5 flex items-center gap-2">
               <Building2 size={16} />
               About the Brand
             </h2>
 
             {/* Brand Avatar + Name */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
-                style={{ background: 'linear-gradient(135deg, #0F3460, #1a4a8a)' }}
+                className="w-13 h-13 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+                style={{ background: 'linear-gradient(135deg, #0F3460, #1a4a8a)', width: '52px', height: '52px' }}
               >
                 {campaign.brand.businessName.charAt(0)}
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 flex items-center gap-1.5">
+                <h3 className="font-extrabold text-gray-900 flex items-center gap-1.5">
                   {campaign.brand.businessName}
                   {campaign.brand.verified && (
                     <BadgeCheck size={16} className="text-blue-500" />
                   )}
                 </h3>
-                <p className="text-xs text-gray-500">{campaign.brand.category}</p>
+                <p className="text-xs text-gray-400">{campaign.brand.category}</p>
               </div>
             </div>
 
             {/* Brand Stats */}
-            <div className="bg-gray-50 rounded-xl p-4 space-y-3 mb-4">
+            <div className="rounded-xl p-5 space-y-3.5 mb-5" style={{ backgroundColor: 'var(--color-surface-secondary)' }}>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Total Campaigns</span>
+                <span className="text-xs text-gray-400">Total Campaigns</span>
                 <span className="text-sm font-bold text-gray-900">{campaign.brand.totalCampaigns}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Total Spent</span>
+                <span className="text-xs text-gray-400">Total Spent</span>
                 <span className="text-sm font-bold text-gray-900">₹{campaign.brand.totalSpent.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Rating</span>
+                <span className="text-xs text-gray-400">Rating</span>
                 <span className="text-sm font-bold text-gray-900">{campaign.brand.avgRating.toFixed(1)} / 5.0</span>
               </div>
             </div>
@@ -302,11 +302,11 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
                   href={campaign.brand.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-50"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors p-2.5 rounded-xl hover:bg-gray-50"
                 >
                   <Globe size={16} />
                   Website
-                  <ExternalLink size={12} className="ml-auto text-gray-400" />
+                  <ExternalLink size={12} className="ml-auto text-gray-300" />
                 </a>
               )}
               {campaign.brand.instagramHandle && (
@@ -314,16 +314,16 @@ export default async function CampaignDetailPage({ params }: { params: Promise<{
                   href={`https://instagram.com/${campaign.brand.instagramHandle}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-50"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors p-2.5 rounded-xl hover:bg-gray-50"
                 >
                   <Instagram size={16} />
                   @{campaign.brand.instagramHandle}
-                  <ExternalLink size={12} className="ml-auto text-gray-400" />
+                  <ExternalLink size={12} className="ml-auto text-gray-300" />
                 </a>
               )}
               <Link
                 href={`/brand/${campaign.brand.id}`}
-                className="flex items-center gap-2 text-sm font-semibold p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold p-2.5 rounded-xl hover:bg-gray-50 transition-colors"
                 style={{ color: '#E94560' }}
               >
                 View Full Profile

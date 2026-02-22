@@ -66,9 +66,9 @@ interface Application {
 }
 
 const STATUS_CONFIG = {
-  pending: { label: 'Pending', color: '#F59E0B', bgColor: 'rgba(245, 158, 11, 0.1)', icon: Clock },
-  accepted: { label: 'Accepted', color: '#10B981', bgColor: 'rgba(16, 185, 129, 0.1)', icon: CheckCircle },
-  rejected: { label: 'Rejected', color: '#EF4444', bgColor: 'rgba(239, 68, 68, 0.1)', icon: XCircle },
+  pending: { label: 'Pending', color: '#F59E0B', bgColor: 'rgba(245, 158, 11, 0.08)', icon: Clock },
+  accepted: { label: 'Accepted', color: '#10B981', bgColor: 'rgba(16, 185, 129, 0.08)', icon: CheckCircle },
+  rejected: { label: 'Rejected', color: '#EF4444', bgColor: 'rgba(239, 68, 68, 0.08)', icon: XCircle },
 };
 
 export default function ApplicationsPage() {
@@ -175,7 +175,7 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto page-enter">
       {/* Toast */}
       {toast && (
         <div
@@ -190,11 +190,17 @@ export default function ApplicationsPage() {
       )}
 
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+      <div className="mb-10">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="badge-premium text-xs font-semibold uppercase tracking-wider inline-flex">
+            <Inbox size={12} />
+            Applications
+          </div>
+        </div>
+        <h1 className="heading-display text-3xl sm:text-4xl text-gray-900">
           {isBrand ? 'Applications' : 'My Applications'}
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className="text-gray-400 mt-2.5">
           {isBrand
             ? 'Review and manage creator applications for your campaigns'
             : 'Track the status of your campaign applications'}
@@ -202,7 +208,7 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Status Tabs */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-10">
         {[
           { key: '', label: 'All', count: counts.all },
           { key: 'pending', label: 'Pending', count: counts.pending },
@@ -212,11 +218,7 @@ export default function ApplicationsPage() {
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
-              statusFilter === tab.key
-                ? 'bg-gray-900 text-white shadow-md'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+            className={`tab-premium ${statusFilter === tab.key ? 'active' : ''}`}
           >
             {tab.label}
             <span
@@ -255,15 +257,14 @@ export default function ApplicationsPage() {
             return (
               <div
                 key={application.id}
-                className="card overflow-hidden transition-all"
+                className="card overflow-hidden transition-all duration-200"
               >
                 {/* Main Row */}
                 <div
-                  className="p-5 cursor-pointer hover:bg-gray-50/50 transition-colors"
+                  className="p-6 cursor-pointer hover:bg-gray-50/50 transition-colors"
                   onClick={() => setExpandedId(isExpanded ? null : application.id)}
                 >
                   <div className="flex items-start gap-4">
-                    {/* Creator Avatar (brand view) or Campaign Color (creator view) */}
                     {isBrand ? (
                       <Avatar
                         src={application.creator.user?.image}
@@ -279,14 +280,13 @@ export default function ApplicationsPage() {
                       </div>
                     )}
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <h3 className="text-base font-bold text-gray-900 truncate">
+                          <h3 className="text-base font-extrabold text-gray-900 truncate">
                             {isBrand ? application.creator.displayName : application.campaign.title}
                           </h3>
-                          <p className="text-sm text-gray-500 mt-0.5">
+                          <p className="text-sm text-gray-400 mt-0.5">
                             {isBrand
                               ? `Applied to "${application.campaign.title}"`
                               : `by ${application.campaign.brand.businessName}`}
@@ -294,7 +294,6 @@ export default function ApplicationsPage() {
                         </div>
 
                         <div className="flex items-center gap-3 flex-shrink-0">
-                          {/* Status Badge */}
                           <div
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                             style={{ backgroundColor: config.bgColor, color: config.color }}
@@ -302,20 +301,18 @@ export default function ApplicationsPage() {
                             <StatusIcon size={14} />
                             {config.label}
                           </div>
-                          {/* Expand Toggle */}
-                          {isExpanded ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                          {isExpanded ? <ChevronUp size={18} className="text-gray-300" /> : <ChevronDown size={18} className="text-gray-300" />}
                         </div>
                       </div>
 
-                      {/* Quick Stats Row */}
-                      <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-500">
+                      <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-400">
                         <div className="flex items-center gap-1.5">
-                          <MapPin size={14} className="text-gray-400" />
+                          <MapPin size={14} className="text-gray-300" />
                           {isBrand ? application.creator.city : application.campaign.city}
                         </div>
                         {isBrand && application.creator.followerCount && (
                           <div className="flex items-center gap-1.5">
-                            <Users size={14} className="text-gray-400" />
+                            <Users size={14} className="text-gray-300" />
                             {application.creator.followerCount >= 1000
                               ? `${(application.creator.followerCount / 1000).toFixed(1)}K`
                               : application.creator.followerCount}
@@ -325,7 +322,7 @@ export default function ApplicationsPage() {
                           <StarRating rating={application.creator.avgRating} size={12} />
                         )}
                         <div className="flex items-center gap-1.5">
-                          <Calendar size={14} className="text-gray-400" />
+                          <Calendar size={14} className="text-gray-300" />
                           {new Date(application.appliedAt).toLocaleDateString('en-IN', {
                             day: 'numeric',
                             month: 'short',
@@ -342,40 +339,38 @@ export default function ApplicationsPage() {
 
                 {/* Expanded Details */}
                 {isExpanded && (
-                  <div className="border-t border-gray-100 bg-gray-50/50">
-                    <div className="p-5 grid lg:grid-cols-3 gap-6">
-                      {/* Pitch Text */}
+                  <div className="border-t" style={{ borderColor: 'var(--color-border-light)', backgroundColor: 'var(--color-surface-secondary)' }}>
+                    <div className="p-6 grid lg:grid-cols-3 gap-6">
                       <div className="lg:col-span-2">
-                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
                           {isBrand ? 'Creator\'s Pitch' : 'Your Pitch'}
                         </h4>
-                        <div className="bg-white rounded-xl p-4 border border-gray-100">
+                        <div className="bg-white rounded-xl p-5 border" style={{ borderColor: 'var(--color-border-light)' }}>
                           <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
                             {application.pitchText}
                           </p>
                         </div>
 
-                        {/* Creator Details (for brand view) */}
                         {isBrand && (
                           <div className="mt-4 grid sm:grid-cols-3 gap-3">
-                            <div className="bg-white rounded-xl p-4 border border-gray-100">
-                              <p className="text-xs text-gray-500 mb-1">Niche</p>
+                            <div className="bg-white rounded-xl p-4 border" style={{ borderColor: 'var(--color-border-light)' }}>
+                              <p className="text-xs text-gray-400 mb-1">Niche</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {application.creator.niches.slice(0, 3).map(n => (
                                   <span key={n} className="badge text-xs">{n}</span>
                                 ))}
                               </div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 border border-gray-100">
-                              <p className="text-xs text-gray-500 mb-1">Engagement</p>
+                            <div className="bg-white rounded-xl p-4 border" style={{ borderColor: 'var(--color-border-light)' }}>
+                              <p className="text-xs text-gray-400 mb-1">Engagement</p>
                               <p className="text-lg font-bold text-gray-900">
                                 {application.creator.engagementRate
                                   ? `${(application.creator.engagementRate * 100).toFixed(1)}%`
                                   : 'N/A'}
                               </p>
                             </div>
-                            <div className="bg-white rounded-xl p-4 border border-gray-100">
-                              <p className="text-xs text-gray-500 mb-1">Rate Range</p>
+                            <div className="bg-white rounded-xl p-4 border" style={{ borderColor: 'var(--color-border-light)' }}>
+                              <p className="text-xs text-gray-400 mb-1">Rate Range</p>
                               <p className="text-lg font-bold" style={{ color: '#E94560' }}>
                                 ₹{application.creator.rateMin.toLocaleString('en-IN')} - ₹{application.creator.rateMax.toLocaleString('en-IN')}
                               </p>
@@ -384,9 +379,7 @@ export default function ApplicationsPage() {
                         )}
                       </div>
 
-                      {/* Actions Sidebar */}
                       <div className="space-y-3">
-                        {/* Brand Actions */}
                         {isBrand && application.status === 'pending' && (
                           <>
                             <button
@@ -418,7 +411,6 @@ export default function ApplicationsPage() {
                           </>
                         )}
 
-                        {/* View Creator Profile */}
                         {isBrand && (
                           <Link
                             href={`/creator/${application.creator.id}`}
@@ -430,7 +422,6 @@ export default function ApplicationsPage() {
                           </Link>
                         )}
 
-                        {/* Creator view - link to campaign */}
                         {isCreator && (
                           <Link
                             href={`/campaigns/${application.campaignId}`}
@@ -442,13 +433,12 @@ export default function ApplicationsPage() {
                           </Link>
                         )}
 
-                        {/* Instagram Link */}
                         {isBrand && application.creator.instagramHandle && (
                           <a
                             href={`https://instagram.com/${application.creator.instagramHandle}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+                            className="w-full px-4 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-500 hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
                             onClick={e => e.stopPropagation()}
                           >
                             <Instagram size={16} />
@@ -456,7 +446,6 @@ export default function ApplicationsPage() {
                           </a>
                         )}
 
-                        {/* Status Info */}
                         {application.status !== 'pending' && (
                           <div
                             className="rounded-xl p-4 text-sm"
@@ -466,7 +455,7 @@ export default function ApplicationsPage() {
                               <StatusIcon size={16} />
                               <span className="font-semibold">{config.label}</span>
                             </div>
-                            <p className="text-gray-600 text-xs">
+                            <p className="text-gray-500 text-xs">
                               {application.status === 'accepted'
                                 ? 'A deal has been created. Check your Deals page.'
                                 : 'This application was declined.'}
